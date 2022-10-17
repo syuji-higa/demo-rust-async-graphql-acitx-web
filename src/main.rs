@@ -2,10 +2,10 @@ mod app;
 
 use actix_web::web::Data;
 use actix_web::{guard, web, App, HttpResponse, HttpServer, Result};
-use async_graphql::{Schema, EmptyMutation, EmptySubscription};
+use async_graphql::{Schema, EmptySubscription};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
-use app::{Query, AppSchema};
+use app::{Query, Mutation, AppSchema};
 
 async fn index(schema: web::Data<AppSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
@@ -20,7 +20,7 @@ async fn index_playground() -> Result<HttpResponse> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let schema = Schema::build(Query::default(), EmptyMutation, EmptySubscription)
+    let schema = Schema::build(Query::default(), Mutation::default(), EmptySubscription)
         .finish();
 
     println!("Playground: http://localhost:8000");
